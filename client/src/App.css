@@ -1,0 +1,530 @@
+/* ================= GLOBAL ================= */
+
+* {
+  box-sizing: border-box;
+}
+
+html, body, #root {
+  width: 100%;
+  margin: 0;
+}
+
+body {
+  font-family: "Segoe UI", sans-serif;
+  background: radial-gradient(circle at center, #ffd6ec, #ffc2e2);
+  cursor: url("https://cur.cursors-4u.net/symbols/sym-1/sym46.cur"), auto;
+}
+
+/* Floating background hearts */
+body::before {
+  content: "💗 💖 💕 💞 💘 💝 💓 💟 💗 💖 💕 💞 💘 💝 💓 💟";
+  position: fixed;
+  font-size: 45px;
+  opacity: 0.15;
+  top: 100%;
+  white-space: nowrap;
+  animation: floatHearts 30s linear infinite;
+  pointer-events: none;
+}
+
+@keyframes floatHearts {
+  from { transform: translateY(0); }
+  to { transform: translateY(-250vh); }
+}
+
+/* ================= LAYOUT ================= */
+
+.app {
+  min-height: 100vh;
+  width: 100%;
+  padding: 60px 20px;
+}
+
+/* ================= CARD ================= */
+
+.card {
+  background: white;
+  padding: 40px;
+  border-radius: 30px;
+  width: 100%;
+  max-width: 520px;
+  text-align: center;
+  box-shadow: 0 30px 100px rgba(255, 95, 162, 0.4);
+  position: relative;
+  z-index: 10;
+  animation: popIn 0.6s ease;
+
+  /* TRUE horizontal center */
+  margin-left: auto;
+  margin-right: auto;
+}
+
+@keyframes popIn {
+  from { transform: scale(0.85); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+/* ================= HEADERS ================= */
+
+h1 {
+  font-weight: 900;
+  font-size: 26px;
+  line-height: 1.4;
+  margin-bottom: 10px;
+
+  background: linear-gradient(45deg, #ff2e88, #ff5fa2, #ff80bf);
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+
+  text-shadow: 0 4px 15px rgba(255, 95, 162, 0.35);
+}
+
+h2 {
+  font-weight: 800;
+  font-size: 20px;
+  margin-top: 8px;
+  color: #d81b60;
+  text-shadow: 0 3px 10px rgba(255, 95, 162, 0.25);
+}
+
+/* ================= IMAGE ================= */
+
+.avatar {
+  width: 200px;
+  border-radius: 25px;
+  margin: 18px 0;
+  transition: 0.3s ease;
+}
+
+.avatar:hover {
+  transform: scale(1.05);
+}
+
+/* ================= BUTTONS ================= */
+
+.buttons {
+  position: relative;
+  height: 80px;
+  margin-top: 25px;
+  display: flex;
+  justify-content: center;
+  gap: 25px;
+}
+
+button {
+  border: none;
+  padding: 12px 22px;
+  border-radius: 999px;
+  min-width: 120px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.2s ease;
+  font-size: 15px;
+}
+
+/* YES Button */
+.yes {
+  background: linear-gradient(45deg, #ff5fa2, #ff80bf);
+  color: white;
+  box-shadow: 0 10px 25px rgba(255, 95, 162, 0.4);
+}
+
+.yes:hover {
+  transform: scale(1.15);
+}
+
+/* NO Button */
+.no {
+  background: #f1f1f1;
+  color: #444;
+}
+
+.no:hover {
+  background: #e4e4e4;
+}
+
+/* ================= TEXT ================= */
+
+.warning {
+  margin-top: 12px;
+  color: #ff2e88;
+  font-weight: bold;
+  animation: popIn 0.3s ease;
+}
+
+.backendMsg {
+  margin-top: 10px;
+  color: #ff5fa2;
+  font-weight: bold;
+}
+
+/* ================= FINAL SCREEN ================= */
+
+.final {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.kiss {
+  width: 250px;
+  border-radius: 25px;
+  margin-top: 15px;
+  animation: float 2s infinite ease-in-out alternate;
+}
+
+@keyframes float {
+  from { transform: translateY(0px); }
+  to { transform: translateY(-10px); }
+}
+
+/* ================= SCOREBOARD ================= */
+
+.scoreboard {
+  margin-top: 18px;
+  width: 100%;
+  background: rgba(255, 95, 162, 0.08);
+  border: 1px solid rgba(255, 95, 162, 0.2);
+  border-radius: 20px;
+  padding: 20px 18px;
+  text-align: center;
+  animation: popIn 0.5s ease;
+}
+
+.scoreboard h3 {
+  margin: 0 0 10px 0;
+  font-weight: 900;
+  color: #d81b60;
+}
+
+.scoreLine {
+  margin: 6px 0;
+  font-weight: 700;
+  color: #444;
+}
+
+.scoreTotal {
+  margin-top: 12px;
+  font-weight: 900;
+  color: #ff2e88;
+}
+
+.mostDramatic {
+  margin-top: 10px;
+  font-weight: 800;
+  color: #d81b60;
+}
+
+.finalBlessing {
+  margin-top: 12px;
+  font-weight: 900;
+  color: #ff2e88;
+}
+
+/* ================= HEARTBEAT COUNTDOWN ================= */
+
+@keyframes heartbeat {
+  0% { transform: scale(1); }
+  20% { transform: scale(1.08); }
+  40% { transform: scale(1); }
+  60% { transform: scale(1.08); }
+  80% { transform: scale(1); }
+  100% { transform: scale(1); }
+}
+
+.heartbeat {
+  font-size: 24px;
+  font-weight: 900;
+  color: #ff2e88;
+  animation: heartbeat 1s infinite;
+  text-shadow: 0 0 15px rgba(255, 95, 162, 0.4);
+}
+
+/* ================= DATE REVEAL ANIMATION ================= */
+
+@keyframes fadeInSoft {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0px);
+  }
+}
+
+.scoreboard {
+  animation: fadeInSoft 0.6s ease;
+}
+
+/* ================= LOCATION UNLOCK GLOW ================= */
+
+@keyframes glowPulse {
+  0% { box-shadow: 0 0 0 rgba(255, 95, 162, 0.5); }
+  50% { box-shadow: 0 0 20px rgba(255, 95, 162, 0.6); }
+  100% { box-shadow: 0 0 0 rgba(255, 95, 162, 0.5); }
+}
+
+.locationUnlocked {
+  animation: glowPulse 1.5s infinite;
+}
+
+/* ================= GOOGLE MAPS LINK BUTTON ================= */
+
+a.yes {
+  display: inline-block;
+  text-decoration: none;
+  border-radius: 999px;
+  padding: 12px 22px;
+  font-weight: bold;
+  font-size: 15px;
+  background: linear-gradient(45deg, #ff5fa2, #ff80bf);
+  color: white;
+  box-shadow: 0 10px 25px rgba(255, 95, 162, 0.4);
+  transition: 0.2s ease;
+}
+
+a.yes:hover {
+  transform: scale(1.1);
+}
+
+/* ================= DATE TEXT COLOR FIX ================= */
+
+.dateText {
+  color: #ff5fa2; /* light pink */
+  font-weight: 800;
+}
+
+.countdownLabel {
+  color: #ff2e88;
+  font-weight: 900;
+  margin-top: 15px;
+}
+
+.heartbeat {
+  font-size: 24px;
+  font-weight: 900;
+  color: #ff5fa2; /* changed from white to pink */
+  animation: heartbeat 1s infinite;
+  text-shadow: 0 0 12px rgba(255, 95, 162, 0.4);
+}
+
+/* ================= LOVE LETTER MODE ================= */
+
+.loveLetter {
+  margin-top: 25px;
+  background: #fff5fa;
+  border: 2px solid #ffc2e2;
+  border-radius: 20px;
+  padding: 35px 25px;
+  box-shadow: 0 20px 60px rgba(255, 95, 162, 0.2);
+  position: relative;
+  animation: popIn 0.6s ease;
+}
+
+/* little paper fold corner */
+.loveLetter::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  border-width: 0 40px 40px 0;
+  border-style: solid;
+  border-color: transparent #ffd6ec transparent transparent;
+  border-radius: 0 20px 0 0;
+}
+
+/* header */
+.letterTitle {
+  font-size: 22px;
+  font-weight: 900;
+  color: #d81b60;
+  margin-bottom: 10px;
+}
+
+/* body text */
+.letterText {
+  color: #ff5fa2;
+  font-weight: 700;
+  line-height: 1.6;
+  margin: 8px 0;
+}
+
+/* countdown big */
+.heartbeat {
+  font-size: 28px;
+  font-weight: 900;
+  color: #ff2e88;
+  animation: heartbeat 1s infinite;
+  text-shadow: 0 0 15px rgba(255, 95, 162, 0.4);
+  margin-top: 15px;
+}
+
+@keyframes heartbeat {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.08); }
+  100% { transform: scale(1); }
+}
+
+/* dramatic locked message */
+.lockedMessage {
+  margin-top: 18px;
+  font-weight: 900;
+  font-size: 14px;
+  color: #ff2e88;
+  animation: shake 0.6s infinite alternate;
+}
+
+/* reveal button */
+.revealBtn {
+  margin-top: 20px;
+  background: linear-gradient(45deg, #ff5fa2, #ff80bf);
+  color: white;
+  padding: 12px 20px;
+  border-radius: 999px;
+  font-weight: 900;
+  cursor: pointer;
+  border: none;
+  box-shadow: 0 10px 25px rgba(255, 95, 162, 0.4);
+  transition: 0.3s ease;
+}
+
+.revealBtn:hover {
+  transform: scale(1.1);
+}
+
+/* ===== CINEMATIC LETTER SYSTEM ===== */
+
+.waxSeal {
+  margin: 20px auto;
+  width: 160px;
+  height: 160px;
+  background: radial-gradient(circle, #ff5fa2, #ff2e88);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-weight: 900;
+  cursor: pointer;
+  box-shadow: 0 15px 40px rgba(255, 95, 162, 0.5);
+  animation: pulseSeal 1.5s infinite;
+  text-align: center;
+  padding: 15px;
+}
+
+@keyframes pulseSeal {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.08); }
+  100% { transform: scale(1); }
+}
+
+.envelope {
+  animation: popIn 0.6s ease;
+  margin-top: 15px;
+}
+
+.envelope.open {
+  animation: openEnvelope 0.7s ease;
+}
+
+@keyframes openEnvelope {
+  from { transform: translateY(20px) scale(0.95); opacity: 0; }
+  to { transform: translateY(0) scale(1); opacity: 1; }
+}
+
+.dateTextPink {
+  color: #ff8fcf;          /* soft romantic pink */
+  font-size: 22px;
+  font-weight: 900;
+  letter-spacing: 1px;
+  text-shadow: 0 0 8px rgba(255, 105, 180, 0.4);
+  margin: 6px 0;
+}
+
+/* ===== Floating Suspense Messages ===== */
+
+.floatingMessages {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  overflow: hidden;
+}
+
+.floatText {
+  position: absolute;
+  font-weight: 800;
+  color: rgba(255, 95, 162, 0.25);
+  font-size: 18px;
+  white-space: nowrap;
+  animation: floatAround 12s linear infinite;
+}
+
+.floatText:nth-child(1) { top: 10%; left: 5%; animation-duration: 18s; }
+.floatText:nth-child(2) { top: 30%; left: 60%; animation-duration: 15s; }
+.floatText:nth-child(3) { top: 70%; left: 20%; animation-duration: 20s; }
+.floatText:nth-child(4) { top: 50%; left: 80%; animation-duration: 17s; }
+.floatText:nth-child(5) { top: 15%; left: 40%; animation-duration: 22s; }
+.floatText:nth-child(6) { top: 85%; left: 65%; animation-duration: 19s; }
+.floatText:nth-child(7) { top: 60%; left: 10%; animation-duration: 16s; }
+.floatText:nth-child(8) { top: 40%; left: 30%; animation-duration: 21s; }
+
+@keyframes floatAround {
+  0%   { transform: translateY(0px); }
+  50%  { transform: translateY(-20px); }
+  100% { transform: translateY(0px); }
+}
+
+/* ===== Pokeball Seal Open Effect ===== */
+
+.waxSeal {
+  position: relative;
+  overflow: hidden;
+  transition: 0.3s ease;
+}
+
+/* Shake animation */
+.waxSeal.opening {
+  animation: sealShake 0.9s ease forwards;
+}
+
+@keyframes sealShake {
+  0% { transform: scale(1) rotate(0deg); }
+  10% { transform: scale(1.05) rotate(-3deg); }
+  20% { transform: scale(1.05) rotate(3deg); }
+  30% { transform: scale(1.05) rotate(-3deg); }
+  40% { transform: scale(1.05) rotate(3deg); }
+  50% { transform: scale(1.1) rotate(0deg); }
+  60% { transform: scale(1.15); }
+  80% { transform: scale(1.2); opacity: 0.8; }
+  100% { transform: scale(0.2); opacity: 0; }
+}
+
+/* Shine burst */
+.waxSeal::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle, rgba(255,255,255,0.8), transparent 70%);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.waxSeal.opening::after {
+  animation: shineFlash 0.8s ease forwards;
+}
+
+@keyframes shineFlash {
+  0% { opacity: 0; transform: scale(0.5); }
+  50% { opacity: 1; transform: scale(1.3); }
+  100% { opacity: 0; transform: scale(1.8); }
+}
+
+/* Glow burst */
+.waxSeal.opening {
+  box-shadow: 0 0 60px rgba(255, 105, 180, 0.9);
+}
