@@ -2,6 +2,35 @@ import express from "express";
 import cors from "cors";
 import path from "path";
 import { fileURLToPath } from "url";
+import fs from "fs";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+const STATE_FILE = path.join(__dirname, "state.json");
+
+
+function loadState() {
+  try {
+    const data = fs.readFileSync(STATE_FILE, "utf-8");
+    const parsed = JSON.parse(data);
+    // Clamp stage to valid range to prevent corrupted file values
+    parsed.stage = Math.min(Math.max(parsed.stage ?? 1, 1), 4);
+    return parsed;
+  } catch {
+    return {
+      stage: 1,
+      yesClicks: 0,
+      noClicksTotal: 0,
+      noByPerson: { zayaan: 0, reese: 0, neha: 0 },
+      startTime: null,
+      lastCuteMessage: ""
+    };
+  }
+}
+
+function saveState() {
+  fs.writeFileSync(STATE_FILE, JSON.stringify(state, null, 2));
+}
 
 
 const app = express();
@@ -14,14 +43,8 @@ const peopleByStage = {
   3: "neha"
 };
 
-let state = {
-  stage: 1,
-  yesClicks: 0,
-  noClicksTotal: 0,
-  noByPerson: { zayaan: 0, reese: 0, neha: 0 },
-  startTime: null,
-  lastCuteMessage: ""
-};
+let state = loadState();
+
 
 const cuteMessages = [
   "Noted. Your hesitation has been recorded in the Love Database.",
@@ -60,35 +83,42 @@ app.get("/api/progress", (req, res) => {
  * body: { stage }
  */
 app.post("/api/approve", (req, res) => {
-  const currentStage = Number(req.body?.stage ?? state.stage);
+  try {
+    const currentStage = Number(req.body?.stage ?? state.stage);
 
-  // init timer on first real action
-  if (!state.startTime) state.startTime = Date.now();
+    // init timer on first real action
+    if (!state.startTime) state.startTime = Date.now();
 
-  state.yesClicks += 1;
+    state.yesClicks += 1;
 
-  // move forward
-  const nextStage = Math.min(currentStage + 1, 4);
-  state.stage = nextStage;
+    // move forward
+    const nextStage = Math.min(currentStage + 1, 4);
+    state.stage = nextStage;
 
-  const cuteMessage = "YES accepted. Advancing the relationship timeline.";
-  state.lastCuteMessage = cuteMessage;
+    saveState();
 
-  // if nextStage is 4 => done
-  let timeTaken = 0;
-  if (nextStage === 4 && state.startTime) {
-    timeTaken = Math.floor((Date.now() - state.startTime) / 1000);
+    const cuteMessage = "YES accepted. Advancing the relationship timeline.";
+    state.lastCuteMessage = cuteMessage;
+
+    // if nextStage is 4 => done
+    let timeTaken = 0;
+    if (nextStage === 4 && state.startTime) {
+      timeTaken = Math.floor((Date.now() - state.startTime) / 1000);
+    }
+
+    res.json({
+      cuteMessage,
+      nextStage,
+      stage: state.stage,
+      yesClicks: state.yesClicks,
+      noClicksTotal: state.noClicksTotal,
+      noByPerson: state.noByPerson,
+      timeTaken
+    });
+  } catch (err) {
+    console.error("Error in /api/approve:", err);
+    res.status(500).json({ error: err.message });
   }
-
-  res.json({
-    cuteMessage,
-    nextStage,
-    stage: state.stage,
-    yesClicks: state.yesClicks,
-    noClicksTotal: state.noClicksTotal,
-    noByPerson: state.noByPerson,
-    timeTaken
-  });
 });
 
 /**
@@ -104,6 +134,9 @@ app.post("/api/no-click", (req, res) => {
 
   state.noClicksTotal += 1;
   state.noByPerson[who] = (state.noByPerson[who] ?? 0) + 1;
+
+  saveState(); // 👈 ADD THIS
+
 
   const cuteMessage = randomCuteMessage();
   state.lastCuteMessage = cuteMessage;
@@ -132,11 +165,13 @@ app.post("/api/reset", (req, res) => {
     lastCuteMessage: ""
   };
 
+  saveState(); // 👈 ADD THIS
+
+
   res.json({ ok: true });
 });
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+
 
 // Serve built frontend
 app.use(express.static(path.join(__dirname, "../client/dist")));

@@ -11,9 +11,12 @@ type NoByPerson = {
 };
 
 export default function App() {
+  const unlockedOnLoad = localStorage.getItem("valentineUnlocked") === "true";
+
   const [stage, setStage] = useState<Stage>(1);
   const [message, setMessage] = useState("");
   const [showFinal, setShowFinal] = useState(false);
+
   const [yesScale, setYesScale] = useState(1);
   const [warningMessage, setWarningMessage] = useState("");
   
@@ -30,15 +33,15 @@ export default function App() {
 
   /* ================= DATE STATES ================= */
 
-  const [showDateDetails, setShowDateDetails] = useState(false);
+  const [showDateDetails, setShowDateDetails] = useState(unlockedOnLoad);
   const [dateUnlocked, setDateUnlocked] = useState(false);
   const [countdown, setCountdown] = useState("");
 
-  const [sealBroken, setSealBroken] = useState(false);
+  const [sealBroken, setSealBroken] = useState(unlockedOnLoad);
    const [openingSeal, setOpeningSeal] = useState(false);
-  const [envelopeOpened, setEnvelopeOpened] = useState(false);
+  const [envelopeOpened, setEnvelopeOpened] = useState(unlockedOnLoad);
 
-  const targetDate = new Date("2026-02-14T14:00:00");
+  const targetDate = new Date("2026-02-14T14:00:00-07:00");
   
 
   /* ================= FETCH STAGE ================= */
@@ -47,24 +50,26 @@ export default function App() {
     fetch("/api/progress")
       .then((res) => res.json())
       .then((data) => {
-        setStage(data.stage);
+        const safeStage = Math.min(Math.max(data.stage ?? 1, 1), 4) as Stage;
+        setStage(safeStage);
+        if (safeStage === 4) {
+          setShowFinal(true);
+        }
         if (data.noByPerson) setNoByPerson(data.noByPerson);
       })
+
       .catch(() => setStage(1));
   }, []);
 
   /* ================= PERSISTENT FINAL STATE ================= */
 
-  useEffect(() => {
-    const unlocked = localStorage.getItem("valentineUnlocked");
 
-    if (unlocked === "true") {
+  /* 🔥 ADD THIS RIGHT HERE */
+  useEffect(() => {
+    if (stage === 4) {
       setShowFinal(true);
-      setShowDateDetails(true);
-      setSealBroken(true);
-      setEnvelopeOpened(true);
     }
-  }, []);
+  }, [stage]);
 
   /* ================= COUNTDOWN LOGIC ================= */
 
@@ -110,19 +115,20 @@ export default function App() {
       const data = await res.json();
       setMessage(data.cuteMessage + " 💗✨");
 
-      if (data.nextStage <= 3) {
-        setStage(data.nextStage);
+      setStage(data.nextStage);
+
+      if (data.nextStage === 4) {
+        setShowFinal(true);
+        localStorage.setItem("valentineUnlocked", "true");
+        launchConfetti();
+      } else {
         setYesScale(1);
         setWarningMessage("");
-      } else {
-        setShowFinal(true);
-        launchConfetti();
       }
-    } catch {
-      setShowFinal(true);
-      setShowDateDetails(true);
-      localStorage.setItem("valentineUnlocked", "true");
-      launchConfetti();
+
+    } catch (err) {
+      console.error("Failed to approve:", err);
+      setMessage("Something went wrong. Please try again. 💔");
     }
   };
 
@@ -172,11 +178,16 @@ export default function App() {
     });
   };
 
-  const content = {
+  const contentMap = {
     1: { title: "Zayaan 👑", img: "/zayaan.jpg" },
     2: { title: "Reese 🐾", img: "/reese.jpg" },
     3: { title: "NEHA QAMAR 💗", img: "/neha.jpg" }
-  }[stage as 1 | 2 | 3];
+  };
+  
+  const content = contentMap[stage as 1 | 2 | 3] ?? null;
+
+
+
 
   const totalNo = noByPerson.zayaan + noByPerson.reese + noByPerson.neha;
 
@@ -201,7 +212,10 @@ export default function App() {
 
         {!showFinal ? (
           <>
-            <img src={content.img} className="avatar" alt="avatar" />
+            {content && (
+              <img src={content.img} className="avatar" alt="avatar" />
+            )}
+
 
             <h2>
               {stage === 1 && "Be honest now."}
@@ -268,6 +282,9 @@ export default function App() {
 
               <p className="finalBlessing">Verdict: Love wins. Always. 💞</p>
 
+          
+
+
               {!showDateDetails && (
                 <button
                   className="yes"
@@ -329,6 +346,16 @@ export default function App() {
                               </div>
                             </>
                           )}
+                          <button
+                style={{ marginTop: "20px", background: "#ff6fa5" }}
+                onClick={async () => {
+                  await fetch("/api/reset", { method: "POST" });
+                  localStorage.removeItem("valentineUnlocked");
+                  window.location.reload();
+                }}
+                >
+                  Rewind the romance? 😼
+                </button>
 
                           {dateUnlocked && (
                             <div style={{ marginTop: "20px" }}>
@@ -360,3 +387,4 @@ export default function App() {
     </div>
   );
 }
+
